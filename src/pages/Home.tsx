@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase, type Product } from '../lib/supabase'
-import { ArrowRight, Clock, MapPin, Facebook, Instagram } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import ContactForm from '../components/ContactForm'
 
 export default function Home() {
@@ -49,31 +49,33 @@ export default function Home() {
   }
 
   return (
-    <div>
-      {/* Hero Section - Exact match to original */}
-      <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center">
+    <div className="bg-white">
+      {/* Hero Section */}
+      <section className="relative h-[75vh] min-h-[550px] flex items-center justify-center">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1527431293370-0fd6b297b54a?w=1920&h=1080&fit=crop"
             alt="Australian outback"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
         <div className="relative z-10 mx-4">
-          <div className="bg-white/90 backdrop-blur-sm px-8 py-10 md:px-16 md:py-14 text-center max-w-xl">
+          <div className="bg-white/95 px-10 py-10 md:px-14 md:py-12 text-center max-w-[460px]">
             <p className="text-sm text-[#5a4a3a] mb-3 tracking-wide">Sales@gidgeeco.au</p>
-            <h1 className="font-serif text-4xl md:text-5xl text-[#8B6914] mb-1 leading-tight">
+            <h1 className="font-serif text-[42px] md:text-[48px] text-[#8B6914] mb-1 leading-tight">
               Gidgee & Co
             </h1>
-            <h2 className="font-serif text-2xl md:text-3xl text-[#8B6914] mb-4">
+            <h2 className="font-serif text-[28px] md:text-[32px] text-[#8B6914] mb-5">
               Premium Australian Hats
             </h2>
-            <p className="text-[#5a4a3a] text-sm md:text-base mb-6 leading-relaxed max-w-md mx-auto">
+            <p className="text-[#5a4a3a] text-[13px] md:text-[14px] mb-7 leading-relaxed max-w-sm mx-auto">
               Explore our range of Australian inspired hats, eco friendly storage boxes and an all round great Australian experience.
             </p>
-            <Link to="/shop" className="inline-block bg-[#8B6914] text-white px-10 py-3 text-sm tracking-widest uppercase font-medium hover:bg-[#6b5010] transition">
+            <Link 
+              to="/shop" 
+              className="inline-block bg-[#8B6914] text-white px-10 py-3 text-[11px] tracking-[0.2em] uppercase font-medium rounded-full hover:bg-[#6b5010] transition"
+            >
               SHOP NOW
             </Link>
           </div>
@@ -82,24 +84,24 @@ export default function Home() {
 
       {/* Our Passion Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-6 mb-14">
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
-            <h2 className="font-serif text-3xl text-[#8B6914] text-center">Our Passion</h2>
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex items-center justify-center mb-14">
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
+            <h2 className="font-serif text-[28px] text-[#8B6914] mx-6">Our Passion</h2>
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-            <div className="relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-4xl mx-auto">
+            <div>
               <img
-                src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=750&fit=crop"
+                src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=500&h=600&fit=crop"
                 alt="Australian outback lifestyle"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto"
               />
             </div>
             <div className="text-center md:text-left">
-              <h3 className="font-serif text-2xl text-[#5a4a3a] mb-4">Why Hats?</h3>
-              <p className="text-[#5a4a3a] leading-relaxed mb-4 text-sm">
+              <h3 className="text-[15px] text-[#3a2a1a] mb-3 font-normal">Why Hats?</h3>
+              <p className="text-[13px] text-[#5a4a3a] leading-[1.7]">
                 At Gidgee & Co, we believe that hats are more than just an accessory. They are a way to express yourself and show the world who you are. That's why we are passionate about hats and everything they represent.
               </p>
             </div>
@@ -109,17 +111,17 @@ export default function Home() {
 
       {/* Featured Products */}
       <section className="py-20 bg-[#FAF5ED]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-6 mb-14">
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
-            <h2 className="font-serif text-3xl text-[#8B6914] text-center">Featured Products</h2>
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex items-center justify-center mb-10">
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
+            <h2 className="font-serif text-[28px] text-[#8B6914] mx-6">Featured Products</h2>
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
           </div>
 
-          <p className="text-center text-[#5a4a3a] text-sm mb-10">New products are coming soon!</p>
+          <p className="text-center text-[13px] text-[#5a4a3a] mb-10">New products are coming soon!</p>
 
           {loading ? (
-            <p className="text-center text-[#5a4a3a]">Loading...</p>
+            <p className="text-center text-[13px] text-[#5a4a3a]">Loading...</p>
           ) : featuredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((product) => (
@@ -136,16 +138,16 @@ export default function Home() {
                     />
                   </div>
                   <div className="p-4 text-center">
-                    <h3 className="font-serif text-[#8B6914] text-base mb-1">{product.name}</h3>
-                    <p className="text-xs text-[#5a4a3a] mb-2">{product.short_description}</p>
+                    <h3 className="font-serif text-[#8B6914] text-[15px] mb-1">{product.name}</h3>
+                    <p className="text-[11px] text-[#5a4a3a] mb-2">{product.short_description}</p>
                     <div className="flex items-center justify-center gap-2">
                       {product.sale_price ? (
                         <>
-                          <span className="text-[#5a4a3a] line-through text-sm">A${product.price}</span>
-                          <span className="text-[#8B6914] font-bold">A${product.sale_price}</span>
+                          <span className="text-[#5a4a3a] line-through text-[11px]">A${product.price}</span>
+                          <span className="text-[#8B6914] font-medium text-[13px]">A${product.sale_price}</span>
                         </>
                       ) : (
-                        <span className="text-[#8B6914] font-bold">A${product.price}</span>
+                        <span className="text-[#8B6914] font-medium text-[13px]">A${product.price}</span>
                       )}
                     </div>
                   </div>
@@ -158,14 +160,14 @@ export default function Home() {
 
       {/* Explore Our Hat Collection */}
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-6 mb-14">
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
-            <h2 className="font-serif text-3xl text-[#8B6914] text-center">Explore Our Hat Collection</h2>
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="flex items-center justify-center mb-14">
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
+            <h2 className="font-serif text-[28px] text-[#8B6914] mx-6">Explore Our Hat Collection</h2>
+            <div className="h-px bg-[#8B6914]/30 w-[100px]"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[1,2,3,4].map((i) => (
               <div key={i} className="aspect-square bg-[#F5F0E8] overflow-hidden">
                 <img
@@ -181,44 +183,44 @@ export default function Home() {
 
       {/* Contact Section */}
       <section className="py-20 bg-[#FAF5ED]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
               <ContactForm />
             </div>
             <div className="flex flex-col justify-start">
               <div className="mb-8">
-                <p className="text-[#5a4a3a] mb-6">
+                <p className="text-[15px] text-[#3a2a1a] mb-6 leading-relaxed">
                   For sale inquiries, please contact us; we will respond during business hours.
                 </p>
-                <div className="space-y-2 text-sm text-[#5a4a3a]">
+                <div className="space-y-1.5 text-[13px] text-[#5a4a3a]">
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Mon 09:00 am – 05:00 pm</span>
+                    <span>Mon</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Tue 09:00 am – 05:00 pm</span>
+                    <span>Tue</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Wed 09:00 am – 05:00 pm</span>
+                    <span>Wed</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Thu 09:00 am – 05:00 pm</span>
+                    <span>Thu</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Fri 09:00 am – 05:00 pm</span>
+                    <span>Fri</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Sat 09:00 am – 05:00 pm</span>
+                    <span>Sat</span>
+                    <span>09:00 am – 05:00 pm</span>
                   </div>
-                  <div className="flex items-center gap-2 font-medium">
-                    <Clock size={14} className="text-[#8B6914]" />
-                    <span>Sun Closed</span>
+                  <div className="flex items-center gap-2 font-semibold">
+                    <span>Sun</span>
+                    <span>Closed</span>
                   </div>
                 </div>
               </div>
@@ -228,47 +230,53 @@ export default function Home() {
       </section>
 
       {/* Social */}
-      <section className="py-12 bg-white border-t border-[#F5F0E8]">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-6 mb-8">
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
-            <h2 className="font-serif text-3xl text-[#8B6914]">Social</h2>
-            <div className="h-px w-24 bg-[#8B6914]/30"></div>
+      <section className="py-16 bg-white border-t border-[#F5F0E8]">
+        <div className="max-w-5xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center mb-10">
+            <div className="h-px bg-[#8B6914]/30 flex-1 max-w-[150px]"></div>
+            <h2 className="font-serif text-[28px] text-[#8B6914] mx-6">Social</h2>
+            <div className="h-px bg-[#8B6914]/30 flex-1 max-w-[150px]"></div>
           </div>
-          <div className="flex justify-center gap-6">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] hover:opacity-80 transition">
-              <Facebook size={32} />
+          <div className="flex justify-center gap-8">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="transition hover:opacity-80">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="#1877F2">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-[#E4405F] hover:opacity-80 transition">
-              <Instagram size={32} />
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="transition hover:opacity-80">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="#E4405F">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+              </svg>
             </a>
           </div>
         </div>
       </section>
 
-      {/* Keep in Touch / Newsletter */}
+      {/* Keep in Touch */}
       <section className="py-16 bg-white border-t border-[#F5F0E8]">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="font-serif text-2xl text-[#8B6914] mb-2">Keep in Touch</h2>
-          <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto mt-6">
-            <input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-4 py-3 border border-[#8B6914]/20 bg-[#FAF5ED] text-[#5a4a3a] placeholder-[#5a4a3a]/50 focus:outline-none focus:border-[#8B6914] transition"
-              required
-            />
-            <button
-              type="submit"
-              disabled={subscribeStatus === 'submitting'}
-              className="px-8 py-3 bg-[#8B6914] text-white text-sm tracking-widest uppercase font-medium hover:bg-[#6b5010] transition disabled:opacity-50"
-            >
-              SIGN UP
-            </button>
-          </form>
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <h2 className="font-serif text-[24px] text-[#8B6914] md:w-[200px] md:text-right">Keep in Touch</h2>
+            <form onSubmit={handleNewsletter} className="flex flex-1 gap-0 max-w-md w-full">
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="flex-1 px-4 py-3 border border-[#8B6914]/20 bg-[#FAF5ED] text-[13px] text-[#5a4a3a] placeholder-[#5a4a3a]/50 focus:outline-none focus:border-[#8B6914] transition"
+                required
+              />
+              <button
+                type="submit"
+                disabled={subscribeStatus === 'submitting'}
+                className="px-8 py-3 bg-[#8B6914] text-white text-[11px] tracking-[0.2em] uppercase font-medium rounded-r-full hover:bg-[#6b5010] transition disabled:opacity-50"
+              >
+                SIGN UP
+              </button>
+            </form>
+          </div>
           {subscribeStatus === 'success' && (
-            <p className="text-green-600 text-sm mt-3">Get 10% off your first purchase when you sign up for our newsletter!</p>
+            <p className="text-green-600 text-[12px] mt-3 text-center">Get 10% off your first purchase when you sign up for our newsletter!</p>
           )}
         </div>
       </section>
