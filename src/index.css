@@ -3,22 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-white text-[#5a4a3a] antialiased;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+    background-color: #fff;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: Georgia, 'Times New Roman', serif;
-  }
-}
-
-@layer components {
-  .divider-title {
-    @apply flex items-center justify-center gap-6;
-  }
-  .divider-title::before,
-  .divider-title::after {
-    content: '';
-    @apply h-px bg-[#8B6914]/30 flex-1 max-w-[120px];
+    font-family: 'Playfair Display', serif;
   }
 }
