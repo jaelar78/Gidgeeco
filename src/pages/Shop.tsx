@@ -1,155 +1,175 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { ArrowLeft, Bell } from 'lucide-react'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import CookieBanner from '../components/CookieBanner'
 import { supabase, type Product } from '../lib/supabase'
-import { Filter, ShoppingBag } from 'lucide-react'
+
+const HAT_IMAGES = [
+  'https://img1.wsimg.com/isteam/getty/833600552/:/',
+  'https://img1.wsimg.com/isteam/stock/4182/:/',
+  'https://img1.wsimg.com/isteam/getty/2189722091/:/',
+  'https://img1.wsimg.com/isteam/getty/841219372/:/',
+  'https://img1.wsimg.com/isteam/stock/100592/:/',
+]
+
+const HAT_NAMES = [
+  'Classic Australian Outback Hat',
+  'Eco Friendly Storage Box',
+  'Premium Leather Hat',
+  'Wide Brim Sun Hat',
+  'Canvas Adventure Hat',
+]
 
 export default function Shop() {
   const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchParams] = useSearchParams()
-  const categoryFilter = searchParams.get('category')
+  const [notifyEmail, setNotifyEmail] = useState('')
+  const [notifyProduct, setNotifyProduct] = useState<string | null>(null)
+  const [notifySent, setNotifySent] = useState(false)
 
   useEffect(() => {
-    fetchCategories()
-    fetchProducts()
-  }, [categoryFilter])
-
-  async function fetchCategories() {
-    try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('id, name, slug')
-        .order('sort_order', { ascending: true })
-
-      if (error) throw error
-      setCategories(data || [])
-    } catch (err) {
-      console.error('Error fetching categories:', err)
-    }
-  }
-
-  async function fetchProducts() {
-    setLoading(true)
-    try {
-      let query = supabase
-        .from('products')
-        .select('*, category:categories(name, slug), images:product_images(*)')
-        .in('status', ['active', 'coming_soon'])
-        .order('created_at', { ascending: false })
-
-      if (categoryFilter) {
-        query = query.eq('category.slug', categoryFilter)
+    const fetchProducts = async () => {
+      const { data } = await supabase.from('products').select('*')
+      if (data && data.length > 0) {
+        setProducts(data)
+      } else {
+        const placeholders: Product[] = HAT_NAMES.map((name, i) => ({
+          id: `placeholder-${i}`,
+          name,
+          description: 'Premium Australian quality. Coming soon.',
+          price: 0,
+          image_url: HAT_IMAGES[i],
+          category: 'hats',
+          stock: 0,
+          coming_soon: true,
+          created_at: '',
+        }))
+        setProducts(placeholders)
       }
-
-      const { data, error } = await query
-
-      if (error) throw error
-      setProducts(data || [])
-    } catch (err) {
-      console.error('Error fetching products:', err)
-    } finally {
-      setLoading(false)
     }
+    fetchProducts()
+  }, [])
+
+  const handleNotify = async (e: React.FormEvent, productName: string) => {
+    e.preventDefault()
+    if (!notifyEmail) return
+    await supabase.from('interests').insert({
+      email: notifyEmail,
+      product_name: productName,
+    })
+    setNotifySent(true)
+    setNotifyEmail('')
+    setTimeout(() => {
+      setNotifyProduct(null)
+      setNotifySent(false)
+    }, 2000)
   }
 
   return (
-    <div className="min-h-screen bg-gidgee-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <div className="h-px w-16 bg-gidgee-brown/30"></div>
-          <h1 className="font-serif text-4xl text-gidgee-brown">Shop</h1>
-          <div className="h-px w-16 bg-gidgee-brown/30"></div>
-        </div>
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="pt-28 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-brand-gold transition-colors mb-8">
+          <ArrowLeft size={18} />
+          Back to Home
+        </Link>
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          <Link
-            to="/shop"
-            className={`px-4 py-2 rounded-sm text-sm font-medium transition ${
-              !categoryFilter
-                ? 'bg-gidgee-brown text-white'
-                : 'bg-white text-gidgee-brown hover:bg-gidgee-brown/10'
-            }`}
-          >
-            <Filter size={14} className="inline mr-1" />
-            All
-          </Link>
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/shop?category=${cat.slug}`}
-              className={`px-4 py-2 rounded-sm text-sm font-medium transition ${
-                categoryFilter === cat.slug
-                  ? 'bg-gidgee-brown text-white'
-                  : 'bg-white text-gidgee-brown hover:bg-gidgee-brown/10'
-              }`}
-            >
-              {cat.name}
-            </Link>
+        <h1 className="text-4xl md:text-5xl font-serif text-brand-dark mb-2">Shop</h1>
+        <p className="text-gray-600 mb-12">Explore our range of Australian inspired hats and eco-friendly products.</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.map((product, index) => (
+            <div key={product.id} className="group">
+              <Link to={`/product/${product.id}`}>
+                <div className="relative overflow-hidden rounded-lg bg-brand-light">
+                  <img
+                    src={product.image_url || HAT_IMAGES[index % HAT_IMAGES.length]}
+                    alt={product.name}
+                    className="w-full h-72 object-cover transition-transform group-hover:scale-105"
+                  />
+                  {product.coming_soon && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
+                    </div>
+                  )}
+                </div>
+              </Link>
+              <div className="mt-4">
+                <Link to={`/product/${product.id}`}>
+                  <h3 className="text-lg font-medium text-brand-dark hover:text-brand-gold transition-colors">{product.name}</h3>
+                </Link>
+                <p className="text-sm text-gray-500 mt-1">{product.description}</p>
+                {product.price > 0 ? (
+                  <p className="text-lg font-medium text-brand-gold mt-2">${product.price.toFixed(2)}</p>
+                ) : (
+                  <button
+                    onClick={() => setNotifyProduct(product.name)}
+                    className="mt-2 text-sm text-brand-gold hover:underline flex items-center gap-1"
+                  >
+                    <Bell size={14} />
+                    Notify Me
+                  </button>
+                )}
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Products Grid */}
-        {loading ? (
-          <div className="text-center py-12 text-gidgee-dark">Loading products...</div>
-        ) : products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Link
-                key={product.id}
-                to={`/shop/${product.slug}`}
-                className="group bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-md transition"
-              >
-                <div className="relative aspect-square overflow-hidden bg-gidgee-sand">
-                  <img
-                    src={product.images?.[0]?.image_url || 'https://via.placeholder.com/400?text=Coming+Soon'}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                  {product.status === 'coming_soon' && (
-                    <div className="absolute top-3 left-3 bg-gidgee-brown text-white text-xs px-2 py-1 rounded-sm">
-                      Coming Soon
-                    </div>
-                  )}
-                  {product.sale_price && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-sm">
-                      Sale
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <p className="text-xs text-gidgee-brown/60 uppercase tracking-wider mb-1">
-                    {product.category?.name}
-                  </p>
-                  <h3 className="font-serif text-gidgee-brown text-xl mb-2">{product.name}</h3>
-                  <p className="text-sm text-gidgee-dark mb-3 line-clamp-2">{product.short_description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {product.sale_price ? (
-                        <>
-                          <span className="text-gidgee-dark/50 line-through text-sm">A${product.price}</span>
-                          <span className="text-gidgee-brown font-bold text-lg">A${product.sale_price}</span>
-                        </>
-                      ) : (
-                        <span className="text-gidgee-brown font-bold text-lg">A${product.price}</span>
-                      )}
-                    </div>
-                    <span className="text-gidgee-brown hover:text-gidgee-gold transition">
-                      <ShoppingBag size={20} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gidgee-dark text-lg mb-4">No products available yet.</p>
-            <p className="text-gidgee-dark/60">New products are coming soon! Sign up for our newsletter to be notified.</p>
+        {products.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-lg">Products coming soon. Check back shortly!</p>
           </div>
         )}
       </div>
+
+      {/* Notify Modal */}
+      {notifyProduct && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            {notifySent ? (
+              <div className="text-center">
+                <Bell className="mx-auto mb-4 text-brand-gold" size={32} />
+                <h3 className="text-xl font-serif text-brand-dark mb-2">You're on the list!</h3>
+                <p className="text-gray-600">We'll notify you when {notifyProduct} is available.</p>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-xl font-serif text-brand-dark mb-4">Notify Me</h3>
+                <p className="text-gray-600 mb-4">Be the first to know when {notifyProduct} is in stock.</p>
+                <form onSubmit={(e) => handleNotify(e, notifyProduct)}>
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    required
+                    value={notifyEmail}
+                    onChange={(e) => setNotifyEmail(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setNotifyProduct(null)}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 px-4 py-3 bg-brand-dark text-white rounded hover:bg-black transition-colors"
+                    >
+                      Notify Me
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Footer />
+      <CookieBanner />
     </div>
   )
 }
