@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gidgee-cream text-gidgee-dark font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gidgee-brown text-white px-8 py-3 rounded-none font-medium tracking-wider uppercase text-sm hover:bg-gidgee-dark transition-colors duration-300;
+  }
+  .btn-outline {
+    @apply border-2 border-gidgee-brown text-gidgee-brown px-8 py-3 rounded-none font-medium tracking-wider uppercase text-sm hover:bg-gidgee-brown hover:text-white transition-colors duration-300;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-serif text-gidgee-brown text-center mb-8;
+  }
+}
