@@ -2,19 +2,42 @@ import { Link } from 'react-router-dom'
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-[#F5F0E8] mt-auto">
-      <div className="max-w-5xl mx-auto px-4 py-8 text-center">
-        <div className="flex items-center justify-center gap-3 mb-3 text-[12px]">
-          <Link to="/privacy" className="text-[#8B6914] hover:underline">
-            Privacy Policy
-          </Link>
-          <Link to="/terms" className="text-[#8B6914] hover:underline">
-            Terms and Conditions
-          </Link>
+    <footer className="bg-brand-dark text-white py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <img
+              src="https://img1.wsimg.com/isteam/ip/2fb33577-001e-4278-a586-77640575c5d7/logo/temp_logo_1777976760283.png"
+              alt="Gidgee & Co"
+              className="h-12 w-auto object-contain mb-4 invert"
+            />
+            <p className="text-gray-400 text-sm">
+              Premium Australian hats and eco-friendly products.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-serif text-lg mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
+              <li><Link to="/shop" className="hover:text-white transition-colors">Shop</Link></li>
+              <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+              <li><Link to="/#contact" className="hover:text-white transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-serif text-lg mb-4">Contact</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li>sales@gidgeeco.au</li>
+              <li>Australia</li>
+            </ul>
+          </div>
         </div>
 
-        <p className="font-medium text-[#3a2a1a] text-[13px] mb-1">Gidgee & Co</p>
-        <p className="text-[#999] text-[11px]">Copyright © 2023 Gidgee & Co - All Rights Reserved.</p>
+        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+          <p>&copy; {new Date().getFullYear()} Gidgee & Co. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   )

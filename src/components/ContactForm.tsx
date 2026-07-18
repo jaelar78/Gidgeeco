@@ -1,98 +1,116 @@
 import { useState } from 'react'
-import { supabase, type ContactSubmission } from '../lib/supabase'
+import { Send, Paperclip } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState<ContactSubmission>({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: '',
-    message: ''
+    notes: '',
   })
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [attachments, setAttachments] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('submitting')
-
+    if (!formData.email) return
+    setLoading(true)
     try {
-      const { error } = await supabase
-        .from('contacts')
-        .insert([formData])
-
-      if (error) throw error
-
-      setStatus('success')
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' })
-      setTimeout(() => setStatus('idle'), 5000)
+      await supabase.from('contacts').insert({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        notes: formData.notes,
+      })
+      setSubmitted(true)
+      setFormData({ name: '', email: '', phone: '', notes: '' })
     } catch (err) {
-      console.error('Error submitting contact:', err)
-      setStatus('error')
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
   }
 
+  if (submitted) {
+    return (
+      <div className="bg-white p-8 rounded-lg shadow-sm text-center">
+        <h3 className="text-2xl font-serif text-brand-dark mb-2">Thank you!</h3>
+        <p className="text-gray-600">We have received your message and will be in touch soon.</p>
+      </div>
+    )
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        type="email"
-        placeholder="Email*"
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition"
-        required
-      />
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+        />
+      </div>
 
-      <input
-        type="tel"
-        placeholder="Phone"
-        value={formData.phone}
-        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition"
-      />
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+        <input
+          type="email"
+          required
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+        />
+      </div>
 
-      <textarea
-        placeholder="Other notes"
-        value={formData.message}
-        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-        rows={6}
-        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition resize-none"
-        required
-      />
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+        <input
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+        />
+      </div>
 
-      <div className="flex items-center justify-between text-[12px]">
-        <button type="button" className="text-[#8B6914] hover:underline flex items-center gap-1">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-          </svg>
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Other notes</label>
+        <textarea
+          rows={4}
+          value={formData.notes}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold resize-none"
+        />
+      </div>
+
+      <div className="mb-4">
+        <button
+          type="button"
+          className="flex items-center gap-2 text-sm text-gray-600 hover:text-brand-gold transition-colors"
+          onClick={() => setAttachments((a) => a + 1)}
+        >
+          <Paperclip size={16} />
           Attach Files
         </button>
-        <span className="text-[#999]">Attachments (0)</span>
+        {attachments > 0 && (
+          <span className="text-xs text-gray-500 mt-1 block">Attachments ({attachments})</span>
+        )}
       </div>
 
       <button
         type="submit"
-        disabled={status === 'submitting'}
-        className="w-full bg-[#8B6914] text-white py-4 text-[12px] tracking-[0.15em] uppercase font-medium rounded-full hover:bg-[#6b5010] transition disabled:opacity-50"
+        disabled={loading}
+        className="w-full bg-brand-dark text-white py-3 px-6 rounded font-medium uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-2"
       >
-        {status === 'submitting' ? 'Sending...' : 'SEND'}
+        <Send size={16} />
+        {loading ? 'Sending...' : 'Send'}
       </button>
 
-      <p className="text-[11px] text-[#999] text-center leading-relaxed">
-        This site is protected by reCAPTCHA and the Google<span className="text-[#8B6914]"> Privacy Policy</span> and<span className="text-[#8B6914]"> Terms of Service</span> apply.
+      <p className="text-xs text-gray-400 mt-3 text-center">
+        This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
       </p>
-
-      {status === 'success' && (
-        <div className="text-green-600 text-[12px] text-center bg-green-50 p-3">
-          Thank you! We'll be in touch soon.
-        </div>
-      )}
-
-      {status === 'error' && (
-        <div className="text-red-600 text-[12px] text-center bg-red-50 p-3">
-          Something went wrong. Please try again.
-        </div>
-      )}
     </form>
   )
 }

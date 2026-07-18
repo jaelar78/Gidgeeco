@@ -1,90 +1,54 @@
 import { useState } from 'react'
-import { supabase, type NewsletterSubscriber } from '../lib/supabase'
-import { Mail, CheckCircle, AlertCircle } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 export default function Newsletter() {
   const [email, setEmail] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [subscribed, setSubscribed] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('submitting')
-
+    if (!email) return
+    setLoading(true)
     try {
-      const data: NewsletterSubscriber = {
-        email,
-        first_name: firstName,
-        source: 'website'
-      }
-
-      const { error } = await supabase
-        .from('newsletter_subscribers')
-        .insert([data])
-
-      if (error) throw error
-
-      setStatus('success')
+      await supabase.from('newsletter').insert({ email })
+      setSubscribed(true)
       setEmail('')
-      setFirstName('')
-      setTimeout(() => setStatus('idle'), 5000)
     } catch (err) {
-      console.error('Error subscribing:', err)
-      setStatus('error')
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <section className="py-20 bg-gidgee-brown text-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <div className="h-px w-12 bg-white/30"></div>
-          <h2 className="font-serif text-3xl">Keep in Touch</h2>
-          <div className="h-px w-12 bg-white/30"></div>
-        </div>
+    <section className="bg-brand-light py-16">
+      <div className="max-w-4xl mx-auto px-4 text-center">
+        <h2 className="text-3xl md:text-4xl font-serif text-brand-dark mb-2">Keep in Touch</h2>
+        <p className="text-gray-600 mb-8">Sign up for our newsletter to hear about new arrivals and special offers.</p>
 
-        <p className="mb-8 opacity-90">
-          Get 10% off your first purchase when you sign up for our newsletter!
-        </p>
-
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-          <input
-            type="text"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-sm bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-white/50 transition"
-          />
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-sm bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:border-white/50 transition"
-            required
-          />
-          <button
-            type="submit"
-            disabled={status === 'submitting'}
-            className="px-6 py-3 bg-white text-gidgee-brown font-medium rounded-sm hover:bg-gidgee-cream transition disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            <Mail size={16} />
-            SIGN UP
-          </button>
-        </form>
-
-        {status === 'success' && (
-          <div className="flex items-center justify-center gap-2 mt-4 text-green-300">
-            <CheckCircle size={16} />
-            <span>Welcome! Check your inbox for your discount code.</span>
+        {subscribed ? (
+          <div className="bg-white p-6 rounded-lg shadow-sm inline-block">
+            <p className="text-brand-gold font-medium">Thank you for subscribing!</p>
           </div>
-        )}
-
-        {status === 'error' && (
-          <div className="flex items-center justify-center gap-2 mt-4 text-red-300">
-            <AlertCircle size={16} />
-            <span>Something went wrong. Please try again.</span>
-          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+            <input
+              type="email"
+              placeholder="Email Address"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1 px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-brand-dark text-white py-3 px-8 rounded font-medium uppercase tracking-wider hover:bg-black transition-colors"
+            >
+              {loading ? '...' : 'Sign Up'}
+            </button>
+          </form>
         )}
       </div>
     </section>
