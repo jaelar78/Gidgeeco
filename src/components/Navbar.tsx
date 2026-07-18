@@ -39,7 +39,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img
-              src="https://img1.wsimg.com/isteam/ip/2fb33577-001e-4278-a586-77640575c5d7/logo/temp_logo_1777976760283.png"
+              src="/images/logo.png"
               alt="Gidgee & Co"
               className="h-14 w-auto object-contain"
             />

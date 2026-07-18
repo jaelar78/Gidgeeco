@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <img
-              src="https://img1.wsimg.com/isteam/ip/2fb33577-001e-4278-a586-77640575c5d7/logo/temp_logo_1777976760283.png"
+              src="/images/logo.png"
               alt="Gidgee & Co"
               className="h-12 w-auto object-contain mb-4 invert"
             />
