@@ -10,11 +10,11 @@ import { supabase } from '../lib/supabase'
 import type { Product } from '../lib/supabase'
 
 const HAT_IMAGES = [
-  'https://img1.wsimg.com/isteam/getty/833600552/:/',
-  'https://img1.wsimg.com/isteam/stock/4182/:/',
-  'https://img1.wsimg.com/isteam/getty/2189722091/:/',
-  'https://img1.wsimg.com/isteam/getty/841219372/:/',
-  'https://img1.wsimg.com/isteam/stock/100592/:/',
+  '/images/hat-1.jpg',
+  '/images/hat-2.jpg',
+  '/images/hat-3.jpg',
+  '/images/hat-4.jpg',
+  '/images/hat-5.jpg',
 ]
 
 const HAT_NAMES = [
@@ -79,7 +79,7 @@ export default function Home() {
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('https://img1.wsimg.com/isteam/getty/691073166/:/rs=w:1920,m')`,
+            backgroundImage: `url('/images/hero.jpg')`,
           }}
         />
         <div className="absolute inset-0 bg-black/50" />
@@ -105,7 +105,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <img
-                src="https://img1.wsimg.com/isteam/getty/1269854923/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,cg:true"
+                src="/images/our-passion.jpg"
                 alt="Australian outback passion"
                 className="w-full h-[500px] object-cover rounded-lg shadow-lg"
               />

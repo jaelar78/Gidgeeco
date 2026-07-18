@@ -16,7 +16,7 @@ export default function About() {
 
         <div className="relative h-80 rounded-lg overflow-hidden mb-12">
           <img
-            src="https://img1.wsimg.com/isteam/getty/1269854923/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,cg:true"
+            src="/images/our-passion.jpg"
             alt="Australian outback"
             className="w-full h-full object-cover"
           />
