@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { supabase, type ContactSubmission } from '../lib/supabase'
-import { Send } from 'lucide-react'
 
 export default function ContactForm() {
   const [formData, setFormData] = useState<ContactSubmission>({
@@ -39,7 +38,7 @@ export default function ContactForm() {
         placeholder="Email*"
         value={formData.email}
         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        className="w-full px-4 py-3 border border-[#8B6914]/20 bg-[#FAF5ED] text-[#5a4a3a] placeholder-[#5a4a3a]/50 focus:outline-none focus:border-[#8B6914] transition"
+        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition"
         required
       />
 
@@ -48,46 +47,49 @@ export default function ContactForm() {
         placeholder="Phone"
         value={formData.phone}
         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-        className="w-full px-4 py-3 border border-[#8B6914]/20 bg-[#FAF5ED] text-[#5a4a3a] placeholder-[#5a4a3a]/50 focus:outline-none focus:border-[#8B6914] transition"
+        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition"
       />
 
       <textarea
         placeholder="Other notes"
         value={formData.message}
         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-        rows={5}
-        className="w-full px-4 py-3 border border-[#8B6914]/20 bg-[#FAF5ED] text-[#5a4a3a] placeholder-[#5a4a3a]/50 focus:outline-none focus:border-[#8B6914] transition resize-none"
+        rows={6}
+        className="w-full px-4 py-3 border border-[#ddd] bg-white text-[13px] text-[#5a4a3a] placeholder-[#999] focus:outline-none focus:border-[#8B6914] transition resize-none"
         required
       />
 
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between text-[12px]">
         <button type="button" className="text-[#8B6914] hover:underline flex items-center gap-1">
-          <span>🔗 Attach Files</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          Attach Files
         </button>
-        <span className="text-[#5a4a3a]/50">Attachments (0)</span>
+        <span className="text-[#999]">Attachments (0)</span>
       </div>
 
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="w-full bg-[#8B6914] text-white py-4 text-sm tracking-widest uppercase font-medium hover:bg-[#6b5010] transition disabled:opacity-50 flex items-center justify-center gap-2"
+        className="w-full bg-[#8B6914] text-white py-4 text-[12px] tracking-[0.15em] uppercase font-medium rounded-full hover:bg-[#6b5010] transition disabled:opacity-50"
       >
-        <Send size={16} />
         {status === 'submitting' ? 'Sending...' : 'SEND'}
       </button>
 
-      <p className="text-xs text-[#5a4a3a]/50 text-center">
-        This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
+      <p className="text-[11px] text-[#999] text-center leading-relaxed">
+        This site is protected by reCAPTCHA and the Google<span className="text-[#8B6914]"> Privacy Policy</span> and<span className="text-[#8B6914]"> Terms of Service</span> apply.
       </p>
 
       {status === 'success' && (
-        <div className="text-green-600 text-sm text-center bg-green-50 p-3">
+        <div className="text-green-600 text-[12px] text-center bg-green-50 p-3">
           Thank you! We'll be in touch soon.
         </div>
       )}
 
       {status === 'error' && (
-        <div className="text-red-600 text-sm text-center bg-red-50 p-3">
+        <div className="text-red-600 text-[12px] text-center bg-red-50 p-3">
           Something went wrong. Please try again.
         </div>
       )}
