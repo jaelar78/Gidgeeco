@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import CookieBanner from './components/CookieBanner'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
@@ -9,7 +10,7 @@ import Admin from './pages/Admin'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-[#FAF5ED]">
         <Navbar />
         <main className="flex-grow">
           <Routes>
@@ -20,6 +21,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <CookieBanner />
       </div>
     </Router>
   )
