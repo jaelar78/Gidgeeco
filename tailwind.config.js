@@ -6,20 +6,17 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        'gidgee': {
-          'brown': '#8B6914',
-          'gold': '#C9A84C',
-          'sand': '#F5F0E8',
-          'earth': '#D4A574',
-          'dark': '#3D2B1F',
-          'light': '#FDF8F0',
-          'cream': '#FAF5ED'
-        }
-      },
       fontFamily: {
-        'serif': ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
-        'sans': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+        serif: ['"Playfair Display"', 'serif'],
+        sans: ['"Open Sans"', 'sans-serif'],
+      },
+      colors: {
+        brand: {
+          dark: '#1a1a1a',
+          gold: '#c9a96e',
+          light: '#f5f5f0',
+          gray: '#6b6b6b',
+        }
       }
     },
   },
