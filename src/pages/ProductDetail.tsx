@@ -1,250 +1,180 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { supabase, type Product, type ProductInterest } from '../lib/supabase'
-import { ArrowLeft, ShoppingBag, Bell, CheckCircle, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Bell, Share2, Heart } from 'lucide-react'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import CookieBanner from '../components/CookieBanner'
+import { supabase, type Product } from '../lib/supabase'
+
+const HAT_IMAGES = [
+  'https://img1.wsimg.com/isteam/getty/833600552/:/',
+  'https://img1.wsimg.com/isteam/stock/4182/:/',
+  'https://img1.wsimg.com/isteam/getty/2189722091/:/',
+  'https://img1.wsimg.com/isteam/getty/841219372/:/',
+  'https://img1.wsimg.com/isteam/stock/100592/:/',
+]
 
 export default function ProductDetail() {
-  const { slug } = useParams<{ slug: string }>()
+  const { id } = useParams()
   const [product, setProduct] = useState<Product | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [quantity, setQuantity] = useState(1)
   const [notifyEmail, setNotifyEmail] = useState('')
-  const [notifyName, setNotifyName] = useState('')
-  const [notifyStatus, setNotifyStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [notifySent, setNotifySent] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (slug) fetchProduct()
-  }, [slug])
-
-  async function fetchProduct() {
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, category:categories(name, slug), images:product_images(*)')
-        .eq('slug', slug)
-        .single()
-
-      if (error) throw error
-      setProduct(data)
-    } catch (err) {
-      console.error('Error fetching product:', err)
-    } finally {
+    const fetchProduct = async () => {
+      if (!id) return
+      setLoading(true)
+      const { data } = await supabase.from('products').select('*').eq('id', id).single()
+      if (data) {
+        setProduct(data)
+      } else {
+        const index = parseInt(id?.replace('placeholder-', '') || '0')
+        const names = [
+          'Classic Australian Outback Hat',
+          'Eco Friendly Storage Box',
+          'Premium Leather Hat',
+          'Wide Brim Sun Hat',
+          'Canvas Adventure Hat',
+        ]
+        const descriptions = [
+          'A timeless outback hat crafted from premium Australian wool. Water-resistant and built to last through any adventure.',
+          'Sustainable storage solutions made from recycled materials. Perfect for organizing your gear while being kind to the planet.',
+          'Handcrafted leather hat with a wide brim for maximum sun protection. Ages beautifully with every wear.',
+          'Lightweight and breathable sun hat with UPF 50+ protection. Ideal for long days under the Australian sun.',
+          'Durable canvas hat designed for the modern explorer. Features adjustable sizing and ventilation for all-day comfort.',
+        ]
+        if (index >= 0 && index < 5) {
+          setProduct({
+            id,
+            name: names[index],
+            description: descriptions[index],
+            price: 0,
+            image_url: HAT_IMAGES[index],
+            category: 'hats',
+            stock: 0,
+            coming_soon: true,
+            created_at: '',
+          })
+        }
+      }
       setLoading(false)
     }
-  }
+    fetchProduct()
+  }, [id])
 
-  async function handleNotifyMe(e: React.FormEvent) {
+  const handleNotify = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!product) return
-
-    setNotifyStatus('submitting')
-    try {
-      const interest: ProductInterest = {
-        product_id: product.id,
-        email: notifyEmail,
-        name: notifyName
-      }
-
-      const { error } = await supabase
-        .from('product_interests')
-        .insert([interest])
-
-      if (error) throw error
-
-      setNotifyStatus('success')
-      setNotifyEmail('')
-      setNotifyName('')
-      setTimeout(() => setNotifyStatus('idle'), 5000)
-    } catch (err) {
-      console.error('Error submitting interest:', err)
-      setNotifyStatus('error')
-    }
+    if (!notifyEmail || !product) return
+    await supabase.from('interests').insert({
+      email: notifyEmail,
+      product_name: product.name,
+    })
+    setNotifySent(true)
+    setNotifyEmail('')
+    setTimeout(() => setNotifySent(false), 3000)
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gidgee-cream">
-        <p className="text-gidgee-dark">Loading product...</p>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <div className="pt-28 flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-gold"></div>
+        </div>
       </div>
     )
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gidgee-cream">
-        <div className="text-center">
-          <p className="text-gidgee-dark text-lg mb-4">Product not found.</p>
-          <Link to="/shop" className="btn-primary">
-            Back to Shop
-          </Link>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <div className="pt-28 max-w-7xl mx-auto px-4 text-center py-20">
+          <h1 className="text-2xl font-serif text-brand-dark mb-4">Product not found</h1>
+          <Link to="/shop" className="text-brand-gold hover:underline">Back to Shop</Link>
         </div>
       </div>
     )
   }
 
-  const isComingSoon = product.status === 'coming_soon'
-  const primaryImage = product.images?.find(img => img.is_primary) || product.images?.[0]
-
   return (
-    <div className="min-h-screen bg-gidgee-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/shop" className="inline-flex items-center gap-2 text-gidgee-brown hover:text-gidgee-gold transition mb-8">
-          <ArrowLeft size={16} />
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="pt-28 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link to="/shop" className="inline-flex items-center gap-2 text-gray-600 hover:text-brand-gold transition-colors mb-8">
+          <ArrowLeft size={18} />
           Back to Shop
         </Link>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-4">
-            <div className="aspect-square overflow-hidden rounded-sm bg-gidgee-sand">
-              <img
-                src={primaryImage?.image_url || 'https://via.placeholder.com/600?text=Coming+Soon'}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.map((img) => (
-                  <div key={img.id} className="aspect-square overflow-hidden rounded-sm bg-gidgee-sand">
-                    <img
-                      src={img.image_url}
-                      alt={img.alt_text || product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
+          <div className="relative rounded-lg overflow-hidden bg-brand-light">
+            <img
+              src={product.image_url || HAT_IMAGES[0]}
+              alt={product.name}
+              className="w-full h-[500px] object-cover"
+            />
+            {product.coming_soon && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <span className="text-white text-lg font-medium uppercase tracking-wider">Coming Soon</span>
               </div>
             )}
           </div>
 
-          <div className="flex flex-col">
-            <p className="text-sm text-gidgee-brown/60 uppercase tracking-wider mb-2">
-              {product.category?.name}
-            </p>
-            <h1 className="font-serif text-4xl text-gidgee-brown mb-4">{product.name}</h1>
+          <div className="space-y-6">
+            <h1 className="text-3xl md:text-4xl font-serif text-brand-dark">{product.name}</h1>
+            <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
-            <div className="flex items-center gap-3 mb-6">
-              {product.sale_price ? (
-                <>
-                  <span className="text-gidgee-dark/50 line-through text-xl">A${product.price}</span>
-                  <span className="text-gidgee-brown font-bold text-3xl">A${product.sale_price}</span>
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-sm">SALE</span>
-                </>
-              ) : (
-                <span className="text-gidgee-brown font-bold text-3xl">A${product.price}</span>
-              )}
-            </div>
-
-            <p className="text-gidgee-dark leading-relaxed mb-8">
-              {product.description}
-            </p>
-
-            {product.tags && product.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                {product.tags.map((tag) => (
-                  <span key={tag} className="bg-gidgee-sand text-gidgee-dark text-xs px-3 py-1 rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {isComingSoon ? (
-              <div className="bg-gidgee-sand p-6 rounded-sm">
-                <div className="flex items-center gap-2 text-gidgee-brown mb-4">
-                  <Bell size={20} />
-                  <span className="font-medium">Coming Soon - Notify Me</span>
-                </div>
-                <p className="text-sm text-gidgee-dark mb-4">
-                  This product is not yet available. Leave your details and we'll let you know when it's ready!
-                </p>
-
-                <form onSubmit={handleNotifyMe} className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    value={notifyName}
-                    onChange={(e) => setNotifyName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gidgee-brown/20 rounded-sm bg-white focus:outline-none focus:border-gidgee-brown transition"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Your Email*"
-                    value={notifyEmail}
-                    onChange={(e) => setNotifyEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-gidgee-brown/20 rounded-sm bg-white focus:outline-none focus:border-gidgee-brown transition"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    disabled={notifyStatus === 'submitting'}
-                    className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    <Bell size={16} />
-                    {notifyStatus === 'submitting' ? 'Submitting...' : 'NOTIFY ME'}
-                  </button>
-                </form>
-
-                {notifyStatus === 'success' && (
-                  <div className="flex items-center gap-2 text-green-600 mt-3">
-                    <CheckCircle size={16} />
-                    <span>We'll notify you when this product is available!</span>
-                  </div>
-                )}
-
-                {notifyStatus === 'error' && (
-                  <div className="flex items-center gap-2 text-red-600 mt-3">
-                    <AlertCircle size={16} />
-                    <span>Something went wrong. Please try again.</span>
-                  </div>
-                )}
-              </div>
+            {product.price > 0 ? (
+              <p className="text-3xl font-medium text-brand-gold">${product.price.toFixed(2)}</p>
             ) : (
-              <>
-                <div className="flex items-center gap-4 mb-6">
-                  <label className="text-sm text-gidgee-dark">Quantity:</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={product.inventory_count}
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-20 px-3 py-2 border border-gidgee-brown/20 rounded-sm bg-white text-center"
-                  />
-                  <span className="text-sm text-gidgee-dark/60">
-                    {product.inventory_count} in stock
-                  </span>
-                </div>
+              <div className="bg-brand-light p-6 rounded-lg">
+                <p className="text-brand-dark font-medium mb-2">Coming Soon</p>
+                <p className="text-gray-600 text-sm mb-4">This product is not yet available. Be the first to know when it launches.</p>
 
-                <div className="flex gap-4">
-                  <button className="btn-primary flex-1 flex items-center justify-center gap-2">
-                    <ShoppingBag size={16} />
-                    BUY NOW
-                  </button>
-                  <button className="btn-outline flex-1 flex items-center justify-center gap-2">
-                    <ShoppingBag size={16} />
-                    ADD TO CART
-                  </button>
-                </div>
-              </>
+                {notifySent ? (
+                  <div className="flex items-center gap-2 text-brand-gold">
+                    <Bell size={18} />
+                    <span>We'll notify you when it's available!</span>
+                  </div>
+                ) : (
+                  <form onSubmit={handleNotify} className="flex gap-3">
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      required
+                      value={notifyEmail}
+                      onChange={(e) => setNotifyEmail(e.target.value)}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+                    />
+                    <button
+                      type="submit"
+                      className="px-6 py-3 bg-brand-dark text-white rounded hover:bg-black transition-colors flex items-center gap-2"
+                    >
+                      <Bell size={16} />
+                      Notify Me
+                    </button>
+                  </form>
+                )}
+              </div>
             )}
 
-            <div className="mt-8 pt-8 border-t border-gidgee-sand">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gidgee-dark/60">SKU: </span>
-                  <span className="text-gidgee-dark">{product.sku || 'N/A'}</span>
-                </div>
-                <div>
-                  <span className="text-gidgee-dark/60">Category: </span>
-                  <span className="text-gidgee-dark">{product.category?.name}</span>
-                </div>
-              </div>
+            <div className="flex gap-4">
+              <button className="flex items-center gap-2 text-gray-600 hover:text-brand-gold transition-colors">
+                <Heart size={18} />
+                Save
+              </button>
+              <button className="flex items-center gap-2 text-gray-600 hover:text-brand-gold transition-colors">
+                <Share2 size={18} />
+                Share
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <Footer />
+      <CookieBanner />
     </div>
   )
 }
