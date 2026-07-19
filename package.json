@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "download-images": "node scripts/download-images.js",
-    "prebuild": "npm run download-images",
     "dev": "vite --host",
     "build": "tsc && vite build",
     "preview": "vite preview"
