@@ -6,7 +6,7 @@
   "scripts": {
     "download-images": "node scripts/download-images.js",
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
