@@ -6,6 +6,7 @@ import About from './pages/About'
 import ProductDetail from './pages/ProductDetail'
 import Admin from './pages/Admin'
 import Checkout from './pages/Checkout'
+import CheckoutSuccess from './pages/CheckoutSuccess'
 import OurCraft from './pages/OurCraft'
 import Terms from './pages/Terms'
 import CartDrawer from './components/CartDrawer'
@@ -21,6 +22,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/checkout/success" element={<CheckoutSuccess />} />
           <Route path="/our-craft" element={<OurCraft />} />
           <Route path="/terms" element={<Terms />} />
         </Routes>
