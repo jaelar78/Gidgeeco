@@ -31,3 +31,22 @@ export type Newsletter = {
   email: string
   created_at: string
 }
+
+export type Order = {
+  id: string
+  customer_email: string
+  customer_name: string
+  shipping_address: string
+  items: { id: string; name: string; price: number; quantity: number; image_url?: string }[]
+  total: number
+  status: string
+  created_at: string
+}
+
+export type Cart = {
+  id: string
+  email: string
+  items: { id: string; name: string; price: number; quantity: number; image_url?: string }[]
+  created_at: string
+  updated_at: string
+}

@@ -12,7 +12,7 @@ export default function Footer() {
               className="h-12 w-auto object-contain mb-4 invert"
             />
             <p className="text-gray-400 text-sm">
-              Premium Australian hats and eco-friendly products.
+              Premium Australian hats and eco-friendly products. Limited to 87 of each design.
             </p>
           </div>
 
@@ -21,7 +21,9 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/shop" className="hover:text-white transition-colors">Shop</Link></li>
+              <li><Link to="/our-craft" className="hover:text-white transition-colors">Our Craft</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
               <li><Link to="/#contact" className="hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
@@ -36,7 +38,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Gidgee & Co. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gidgee & Co. All rights reserved. Each piece numbered 1/87 to 87/87.</p>
         </div>
       </div>
     </footer>

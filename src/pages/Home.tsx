@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, Clock, Mail, MapPin, Bell } from 'lucide-react'
+import { ChevronDown, Clock, Mail, MapPin, Bell, Leaf, TreePine, Package, ShoppingBag } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Newsletter from '../components/Newsletter'
 import ContactForm from '../components/ContactForm'
 import CookieBanner from '../components/CookieBanner'
+import { useCart } from '../context/CartContext'
 import { supabase } from '../lib/supabase'
 import type { Product } from '../lib/supabase'
 
@@ -30,6 +31,7 @@ export default function Home() {
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifyProduct, setNotifyProduct] = useState<string | null>(null)
   const [notifySent, setNotifySent] = useState(false)
+  const { addItem } = useCart()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -69,6 +71,16 @@ export default function Home() {
     coming_soon: true,
     created_at: '',
   }))
+
+  const handleAddToCart = (product: Product) => {
+    if (product.coming_soon || product.stock <= 0) return
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url || HAT_IMAGES[0],
+    })
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -128,6 +140,55 @@ export default function Home() {
         </div>
       </section>
 
+      {/* The Number 87 Section */}
+      <section className="py-20 bg-brand-light">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <Leaf size={32} className="text-brand-gold" />
+            <h2 className="text-4xl md:text-5xl font-serif text-brand-dark">The Number 87</h2>
+          </div>
+          <p className="text-gray-600 leading-relaxed text-lg mb-6">
+            Every single item we create is part of a limited run of just <strong className="text-brand-dark">87 pieces</strong>. 
+            Each hat, bag, wallet, and accessory is individually numbered — 1/87, 2/87, 3/87, all the way to 87/87. 
+            Once they're gone, that design is retired forever.
+          </p>
+          <p className="text-gray-600 leading-relaxed mb-8">
+            Why 87? It is the number of native Australian wildflower species that bloom in the red dust of the outback after a single good rain. 
+            A reminder that scarcity and beauty go hand in hand.
+          </p>
+          <Link
+            to="/our-craft"
+            className="inline-block bg-brand-dark text-white px-8 py-3 rounded-full hover:bg-black transition-colors"
+          >
+            Discover Our Craft
+          </Link>
+        </div>
+      </section>
+
+      {/* Hidden Gidgee Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <TreePine size={32} className="text-brand-gold" />
+            <h2 className="text-4xl md:text-5xl font-serif text-brand-dark">Find the Hidden Gidgee</h2>
+          </div>
+          <p className="text-gray-600 leading-relaxed text-lg mb-6">
+            Hidden somewhere in every single design is a tiny <strong className="text-brand-dark">gidgee tree</strong> — 
+            the silent guardian of the Australian outback. It is the true mark of our brand. 
+            Some customers spend hours searching for it. Others stumble across it by accident.
+          </p>
+          <p className="text-gray-600 leading-relaxed mb-8">
+            The gidgee tree survives decades of drought and flood with nothing but stubborn roots and deep patience. 
+            However you find it, the hidden gidgee is our promise that every piece carries a piece of the Australian soul.
+          </p>
+          <div className="bg-brand-light rounded-lg p-8 inline-block">
+            <Package size={32} className="mx-auto text-brand-gold mb-4" />
+            <p className="text-brand-dark font-medium">Premium packaging on every order</p>
+            <p className="text-gray-500 text-sm mt-1">Your limited edition piece deserves the best.</p>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Products - First Instance */}
       <section className="py-20 bg-brand-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -141,13 +202,20 @@ export default function Home() {
                     alt={product.name}
                     className="w-full h-64 object-cover transition-transform group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
-                  </div>
+                  {product.coming_soon && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
+                    </div>
+                  )}
+                  {!product.coming_soon && product.stock > 0 && (
+                    <div className="absolute top-2 right-2 bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded">
+                      87
+                    </div>
+                  )}
                 </div>
                 <div className="mt-3 text-center">
                   <p className="text-sm font-medium text-brand-dark">{product.name}</p>
-                  {product.coming_soon && (
+                  {product.coming_soon ? (
                     <>
                       <p className="text-xs text-gray-500 mt-1">Coming Soon</p>
                       <button
@@ -157,7 +225,20 @@ export default function Home() {
                         Notify Me
                       </button>
                     </>
-                  )}
+                  ) : product.price > 0 ? (
+                    <div className="mt-2">
+                      <p className="text-sm text-brand-gold font-medium">${product.price.toFixed(2)}</p>
+                      {product.stock > 0 && (
+                        <button
+                          onClick={() => handleAddToCart(product)}
+                          className="mt-1 text-xs bg-brand-dark text-white px-3 py-1 rounded hover:bg-black transition-colors flex items-center gap-1 mx-auto"
+                        >
+                          <ShoppingBag size={12} />
+                          Add to Cart
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -178,9 +259,11 @@ export default function Home() {
                     alt={product.name}
                     className="w-full h-64 object-cover transition-transform group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
-                  </div>
+                  {product.coming_soon && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
+                    </div>
+                  )}
                 </div>
                 <div className="mt-3 text-center">
                   <p className="text-sm font-medium text-brand-dark">{product.name}</p>

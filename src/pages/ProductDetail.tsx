@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Bell, Share2, Heart } from 'lucide-react'
+import { ArrowLeft, Bell, Share2, Heart, ShoppingBag, Package } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CookieBanner from '../components/CookieBanner'
+import { useCart } from '../context/CartContext'
 import { supabase, type Product } from '../lib/supabase'
 
 const HAT_IMAGES = [
@@ -20,6 +21,7 @@ export default function ProductDetail() {
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifySent, setNotifySent] = useState(false)
   const [loading, setLoading] = useState(true)
+  const { addItem } = useCart()
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -75,6 +77,16 @@ export default function ProductDetail() {
     setTimeout(() => setNotifySent(false), 3000)
   }
 
+  const handleAddToCart = () => {
+    if (!product || product.coming_soon || product.stock <= 0) return
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url || HAT_IMAGES[0],
+    })
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white">
@@ -119,14 +131,44 @@ export default function ProductDetail() {
                 <span className="text-white text-lg font-medium uppercase tracking-wider">Coming Soon</span>
               </div>
             )}
+            {!product.coming_soon && product.stock > 0 && (
+              <div className="absolute top-4 left-4 bg-brand-gold text-white px-3 py-1 rounded text-sm font-bold">
+                Limited Edition: 87 Pieces
+              </div>
+            )}
           </div>
 
           <div className="space-y-6">
             <h1 className="text-3xl md:text-4xl font-serif text-brand-dark">{product.name}</h1>
             <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
+            {!product.coming_soon && product.stock > 0 && (
+              <div className="bg-brand-light p-4 rounded-lg">
+                <p className="text-sm text-gray-600 flex items-center gap-2">
+                  <Package size={16} className="text-brand-gold" />
+                  Premium packaging included. Each item individually numbered 1/87 to 87/87.
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  Hidden gidgee tree in every design — the true mark of our brand.
+                </p>
+              </div>
+            )}
+
             {product.price > 0 ? (
-              <p className="text-3xl font-medium text-brand-gold">${product.price.toFixed(2)}</p>
+              <div className="space-y-4">
+                <p className="text-3xl font-medium text-brand-gold">${product.price.toFixed(2)}</p>
+                {product.stock > 0 ? (
+                  <button
+                    onClick={handleAddToCart}
+                    className="w-full bg-brand-dark text-white py-4 rounded font-medium hover:bg-black transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ShoppingBag size={18} />
+                    Add to Cart
+                  </button>
+                ) : (
+                  <p className="text-red-500 font-medium">Out of Stock</p>
+                )}
+              </div>
             ) : (
               <div className="bg-brand-light p-6 rounded-lg">
                 <p className="text-brand-dark font-medium mb-2">Coming Soon</p>

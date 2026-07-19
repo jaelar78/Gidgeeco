@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ShoppingBag } from 'lucide-react'
+import { useCart } from '../context/CartContext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const { totalItems, setIsOpen: setCartOpen } = useCart()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -20,6 +22,7 @@ export default function Navbar() {
   const navLinks = [
     { to: '/', label: 'Home' },
     { to: '/shop', label: 'Shop' },
+    { to: '/our-craft', label: 'Our Craft' },
     { to: '/about', label: 'About' },
     { to: '/#contact', label: 'Contact' },
   ]
@@ -63,16 +66,21 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/shop"
-              className={`p-2 rounded-full transition-colors ${
+            <button
+              onClick={() => setCartOpen(true)}
+              className={`relative p-2 rounded-full transition-colors ${
                 scrolled
                   ? 'text-gray-700 hover:text-brand-gold'
                   : 'text-white/80 hover:text-white'
               }`}
             >
               <ShoppingBag size={20} />
-            </Link>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-brand-gold text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
           </div>
 
           <button
@@ -101,13 +109,16 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/shop"
+              <button
+                onClick={() => {
+                  setCartOpen(true)
+                  setIsOpen(false)
+                }}
                 className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-brand-gold"
               >
                 <ShoppingBag size={18} />
-                Shop
-              </Link>
+                Cart ({totalItems})
+              </button>
             </div>
           </div>
         )}

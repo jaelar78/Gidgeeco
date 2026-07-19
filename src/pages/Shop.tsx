@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Bell } from 'lucide-react'
+import { ArrowLeft, Bell, ShoppingBag } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CookieBanner from '../components/CookieBanner'
+import { useCart } from '../context/CartContext'
 import { supabase, type Product } from '../lib/supabase'
 
 const HAT_IMAGES = [
@@ -27,6 +28,7 @@ export default function Shop() {
   const [notifyEmail, setNotifyEmail] = useState('')
   const [notifyProduct, setNotifyProduct] = useState<string | null>(null)
   const [notifySent, setNotifySent] = useState(false)
+  const { addItem } = useCart()
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -66,6 +68,16 @@ export default function Shop() {
     }, 2000)
   }
 
+  const handleAddToCart = (product: Product) => {
+    if (product.coming_soon || product.stock <= 0) return
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url || HAT_IMAGES[0],
+    })
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -76,7 +88,7 @@ export default function Shop() {
         </Link>
 
         <h1 className="text-4xl md:text-5xl font-serif text-brand-dark mb-2">Shop</h1>
-        <p className="text-gray-600 mb-12">Explore our range of Australian inspired hats and eco-friendly products.</p>
+        <p className="text-gray-600 mb-12">Explore our range of Australian inspired hats and eco-friendly products. Limited to 87 of each design.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product, index) => (
@@ -93,6 +105,11 @@ export default function Shop() {
                       <span className="text-white text-sm font-medium uppercase tracking-wider">Coming Soon</span>
                     </div>
                   )}
+                  {!product.coming_soon && product.stock > 0 && (
+                    <div className="absolute top-3 right-3 bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded">
+                      Limited: 87
+                    </div>
+                  )}
                 </div>
               </Link>
               <div className="mt-4">
@@ -101,7 +118,20 @@ export default function Shop() {
                 </Link>
                 <p className="text-sm text-gray-500 mt-1">{product.description}</p>
                 {product.price > 0 ? (
-                  <p className="text-lg font-medium text-brand-gold mt-2">${product.price.toFixed(2)}</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-lg font-medium text-brand-gold">${product.price.toFixed(2)}</p>
+                    {product.stock > 0 ? (
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className="flex items-center gap-2 bg-brand-dark text-white px-4 py-2 rounded text-sm hover:bg-black transition-colors"
+                      >
+                        <ShoppingBag size={14} />
+                        Add to Cart
+                      </button>
+                    ) : (
+                      <span className="text-xs text-red-500">Out of Stock</span>
+                    )}
+                  </div>
                 ) : (
                   <button
                     onClick={() => setNotifyProduct(product.name)}
