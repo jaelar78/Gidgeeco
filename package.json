@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "download-images": "node scripts/download-images.js",
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
