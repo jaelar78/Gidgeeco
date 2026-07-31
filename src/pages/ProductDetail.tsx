@@ -8,11 +8,11 @@ import { useCart } from '../context/CartContext'
 import { supabase, type Product } from '../lib/supabase'
 
 const HAT_IMAGES = [
-  '/images/hat-1.jpg',
-  '/images/hat-2.jpg',
-  '/images/hat-3.jpg',
-  '/images/hat-4.jpg',
-  '/images/hat-5.jpg',
+  'https://img1.wsimg.com/isteam/getty/833600552/:/',
+  'https://img1.wsimg.com/isteam/stock/4182/:/',
+  'https://img1.wsimg.com/isteam/getty/2189722091/:/',
+  'https://img1.wsimg.com/isteam/getty/841219372/:/',
+  'https://img1.wsimg.com/isteam/stock/100592/:/',
 ]
 
 export default function ProductDetail() {
