@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 
+const LOGO_URL = 'https://img1.wsimg.com/isteam/ip/2fb33577-001e-4278-a586-77640575c5d7/logo/temp_logo_1777976760283.png'
+
 export default function Footer() {
   return (
     <footer className="bg-brand-dark text-white py-12">
@@ -7,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <img
-              src="/images/logo.png"
+              src={LOGO_URL}
               alt="Gidgee & Co"
               className="h-12 w-auto object-contain mb-4 invert"
             />
