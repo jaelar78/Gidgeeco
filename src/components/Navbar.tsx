@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, ShoppingBag } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
+const LOGO_URL = 'https://img1.wsimg.com/isteam/ip/2fb33577-001e-4278-a586-77640575c5d7/logo/temp_logo_1777976760283.png'
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -42,7 +44,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img
-              src="/images/logo.png"
+              src={LOGO_URL}
               alt="Gidgee & Co"
               className="h-14 w-auto object-contain"
             />
