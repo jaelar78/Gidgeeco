@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CookieBanner from '../components/CookieBanner'
 
+const HERO_IMAGE = 'https://img1.wsimg.com/isteam/getty/691073166/:/rs=w:1920,m'
+
 export default function OurCraft() {
   return (
     <div className="min-h-screen bg-white">
@@ -19,7 +21,7 @@ export default function OurCraft() {
 
         <div className="relative h-80 rounded-lg overflow-hidden mb-12">
           <img
-            src="/images/hero.jpg"
+            src={HERO_IMAGE}
             alt="Australian outback craft"
             className="w-full h-full object-cover"
           />
