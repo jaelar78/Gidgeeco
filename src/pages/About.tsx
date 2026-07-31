@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CookieBanner from '../components/CookieBanner'
 
+const PASSION_IMAGE = 'https://img1.wsimg.com/isteam/getty/1269854923/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,cg:true'
+
 export default function About() {
   return (
     <div className="min-h-screen bg-white">
@@ -16,7 +18,7 @@ export default function About() {
 
         <div className="relative h-80 rounded-lg overflow-hidden mb-12">
           <img
-            src="/images/our-passion.jpg"
+            src={PASSION_IMAGE}
             alt="Australian outback"
             className="w-full h-full object-cover"
           />
